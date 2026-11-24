@@ -7,7 +7,6 @@
     <title>Form Pemesanan</title>
 
     <style>
-      
         * {
             box-sizing: border-box;
         }
@@ -90,6 +89,7 @@
 
         .time-preview {
             margin-top: 10px;
+            margin-bottom: 18px;
             text-align: center;
             font-size: 13px;
             color: #64748b;
@@ -129,6 +129,13 @@
 
     <form id="orderForm">
 
+        <label>Jenis Pemesanan</label>
+        <select id="jenisOrder" required>
+            <option value="">Pilih jenis pemesanan</option>
+            <option value="Orderan Baru">Orderan Baru</option>
+            <option value="Revisi Orderan">Revisi Orderan</option>
+        </select>
+
         <label>Tanggal</label>
         <input type="date" id="tanggal" required>
 
@@ -144,7 +151,6 @@
         <label>Jam (24 Jam)</label>
 
         <div class="time-picker">
-
             <div class="time-column">
                 <select id="jam" required>
                     <option value="">Jam</option>
@@ -156,7 +162,6 @@
                     <option value="">Menit</option>
                 </select>
             </div>
-
         </div>
 
         <div class="time-preview" id="timePreview">
@@ -213,10 +218,8 @@
     // NOMOR WHATSAPP TUJUAN
     const nomorWA = "62882001242159";
 
-
     // OTOMATIS MENGISI TANGGAL HARI INI
     const tanggalInput = document.getElementById("tanggal");
-
     const hariIni = new Date();
 
     const tahun = hariIni.getFullYear();
@@ -225,34 +228,31 @@
 
     tanggalInput.value = `${tahun}-${bulan}-${tanggal}`;
 
-
     // MEMBUAT PILIHAN JAM 00-23
     const jamSelect = document.getElementById("jam");
 
     for (let i = 0; i < 24; i++) {
         const angka = String(i).padStart(2, "0");
-
         const option = document.createElement("option");
+
         option.value = angka;
         option.textContent = angka;
 
         jamSelect.appendChild(option);
     }
 
-
     // MEMBUAT PILIHAN MENIT 00-59
     const menitSelect = document.getElementById("menit");
 
     for (let i = 0; i < 60; i++) {
         const angka = String(i).padStart(2, "0");
-
         const option = document.createElement("option");
+
         option.value = angka;
         option.textContent = angka;
 
         menitSelect.appendChild(option);
     }
-
 
     // PREVIEW JAM
     const timePreview = document.getElementById("timePreview");
@@ -271,13 +271,13 @@
     jamSelect.addEventListener("change", updateTime);
     menitSelect.addEventListener("change", updateTime);
 
-
     // PROSES KIRIM PESANAN
     document.getElementById("orderForm")
-    .addEventListener("submit", function(e) {
+        .addEventListener("submit", function(e) {
 
         e.preventDefault();
 
+        const jenisOrder = document.getElementById("jenisOrder").value;
         const tanggal = document.getElementById("tanggal").value;
         const waktu = document.getElementById("waktu").value;
         const jam = jamSelect.value;
@@ -287,31 +287,27 @@
         const nama = document.getElementById("nama").value.trim();
         const note = document.getElementById("note").value.trim();
 
-
         // FORMAT TANGGAL: 1 Januari 2027
-const [tahun, bulan, tanggalHari] = tanggal.split("-");
+        const [tahun, bulan, tanggalHari] = tanggal.split("-");
 
-const namaBulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-];
+        const namaBulan = [
+            "Januari", "Februari", "Maret", "April",
+            "Mei", "Juni", "Juli", "Agustus",
+            "September", "Oktober", "November", "Desember"
+        ];
 
-const tanggalFormat =
-    `${Number(tanggalHari)} ${namaBulan[Number(bulan) - 1]} ${tahun}`;
-
+        const tanggalFormat =
+            `${Number(tanggalHari)} ${namaBulan[Number(bulan) - 1]} ${tahun}`;
 
         // FORMAT JAM 24 JAM
         const jamFormat = `${jam}:${menit}`;
 
-
         // FORMAT CATATAN
         const catatan = note || "-";
 
-
         // FORMAT PESAN WHATSAPP
         const pesan =
-`ORDERAN BARU
+`${jenisOrder}
 
 Tanggal : ${tanggalFormat}
 Waktu : ${waktu}
@@ -320,7 +316,6 @@ Paket : ${paket}
 Jumlah Pax : ${pax}
 Atas Nama : ${nama}
 Catatan : ${catatan}`;
-
 
         // BUKA WHATSAPP
         const linkWA =
